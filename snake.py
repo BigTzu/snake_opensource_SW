@@ -1,7 +1,7 @@
 from ast import Return
 from pickletools import UP_TO_NEWLINE
 from turtle import speed
-import pygame
+import pygame, sys
 import random
 
 
@@ -20,6 +20,80 @@ snake_speed = 3
 
 fpsClock = pygame.time.Clock()
 screen = pygame.display.set_mode([800, 800])
+
+
+class Menu:
+    def __init__(self):
+        self.font = pygame.font.Font("assets/Bebas-Regular.ttf", 75)
+
+    def check_buttons(self, buttons_list, mouse_position):
+        for button in buttons_list:
+            if mouse_position[0] in range(button.rect.left, button.rect.right) and \
+                    mouse_position[1] in range(button.rect.top, button.rect.bottom):
+                button.text = button.font.render(button.text_input, True, "White")
+            else:
+                button.text = button.font.render(button.text_input, True, "#a7843b")
+            button.update(screen)
+
+    def check_mouse(self, button, position):
+        if position[0] in range(button.rect.left, button.rect.right) and \
+                position[1] in range(button.rect.top, button.rect.bottom):
+            return True
+        return False
+
+    def main_menu_loop(self):
+        pygame.display.set_caption("Menu")
+
+        running = True
+        while running:
+            screen.blit(pygame.image.load("assets/menu_background.jpg"), (0, 0))
+            title = self.font.render("MAIN MENU", True, "#a7843b")
+            title_rect = title.get_rect(center=(400, 100))
+            mouse_position = pygame.mouse.get_pos()
+
+            play_button = Button(image=pygame.image.load("assets/button_rect.png"), x_pos=400, y_pos=250,
+                                 text_input="PLAY", font=self.font)
+            load_button = Button(image=pygame.image.load("assets/button_rect.png"), x_pos=400, y_pos=400,
+                                 text_input="LOAD", font=self.font)
+            ranking_button = Button(image=pygame.image.load("assets/button_rect.png"), x_pos=400, y_pos=550,
+                                    text_input="RANKING", font=self.font)
+            exit_button = Button(image=pygame.image.load("assets/button_rect.png"), x_pos=400, y_pos=700,
+                                 text_input="EXIT", font=self.font)
+
+            screen.blit(title, title_rect)
+            self.check_buttons([play_button, load_button, ranking_button, exit_button], mouse_position)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.check_mouse(play_button, mouse_position):
+                        running = False
+                    if self.check_mouse(exit_button, mouse_position):
+                        pygame.quit()
+                        sys.exit()
+
+            pygame.display.update()
+
+
+class Button:
+    def __init__(self, image, x_pos, y_pos, text_input, font):
+        self.image = image
+        self.x_pos = x_pos
+        self.y_pos = y_pos
+        self.font = font
+        self.text_input = text_input
+        self.text = self.font.render(self.text_input, True, "#a7843b")
+        if self.image is None:
+            self.image = self.text
+        self.rect = self.image.get_rect(center=(self.x_pos, self.y_pos))
+        self.text_rect = self.text.get_rect(center=(self.x_pos, self.y_pos))
+
+    def update(self, screen):
+        if self.image is not None:
+            screen.blit(self.image, self.rect)
+        screen.blit(self.text, self.text_rect)
 
 
 class Snake:
@@ -99,6 +173,9 @@ def draw_background():
 
 
 def play():
+    menu = Menu()
+    menu.main_menu_loop()
+
     screen.fill((240, 230, 140))
     snake = Snake()
 
