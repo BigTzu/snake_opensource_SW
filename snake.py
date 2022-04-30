@@ -1,9 +1,6 @@
-from ast import Return
-from pickletools import UP_TO_NEWLINE
-from turtle import speed
-import pygame, sys
 import random
-
+import pygame
+import sys
 
 pygame.init()
 pygame.display.set_caption('Snake - Open Source SW')
@@ -41,8 +38,46 @@ class Menu:
             return True
         return False
 
+    def ingame_menu_loop(self):
+        pygame.display.set_caption("Ingame Menu")
+
+        running = True
+        while running:
+            title = self.font.render("INGAME MENU", True, "#a7843b")
+            title_rect = title.get_rect(center=(400, 100))
+            mouse_position = pygame.mouse.get_pos()
+
+            resume_button = Button(image=pygame.image.load("assets/button_rect.png"), x_pos=400, y_pos=250,
+                                 text_input="RESUME", font=self.font)
+            restart_button = Button(image=pygame.image.load("assets/button_rect.png"), x_pos=400, y_pos=400,
+                                 text_input="RESTART", font=self.font)
+            save_button = Button(image=pygame.image.load("assets/button_rect.png"), x_pos=400, y_pos=550,
+                                    text_input="SAVE", font=self.font)
+            exit_button = Button(image=pygame.image.load("assets/button_rect.png"), x_pos=400, y_pos=700,
+                                 text_input="EXIT", font=self.font)
+
+            screen.blit(title, title_rect)
+            self.check_buttons([resume_button, restart_button, save_button, exit_button], mouse_position)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.check_mouse(resume_button, mouse_position):
+                        pygame.display.set_caption("Snake")
+                        running = False
+                    elif self.check_mouse(restart_button, mouse_position):
+                        pygame.display.set_caption("Snake")
+                        play(resume=True)
+                    elif self.check_mouse(exit_button, mouse_position):
+                        pygame.quit()
+                        sys.exit()
+
+            pygame.display.update()
+
     def main_menu_loop(self):
-        pygame.display.set_caption("Menu")
+        pygame.display.set_caption("Main Menu")
 
         running = True
         while running:
@@ -69,8 +104,9 @@ class Menu:
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.check_mouse(play_button, mouse_position):
+                        pygame.display.set_caption("Snake")
                         running = False
-                    if self.check_mouse(exit_button, mouse_position):
+                    elif self.check_mouse(exit_button, mouse_position):
                         pygame.quit()
                         sys.exit()
 
@@ -172,9 +208,10 @@ def draw_background():
         tmp *= -1
 
 
-def play():
+def play(resume=False):
     menu = Menu()
-    menu.main_menu_loop()
+    if resume is False:
+        menu.main_menu_loop()
 
     screen.fill((240, 230, 140))
     snake = Snake()
@@ -194,6 +231,8 @@ def play():
                     running = snake.set_direction(DIR_LEFT)
                 elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                     running = snake.set_direction(DIR_RIGHT)
+                elif event.key == pygame.K_ESCAPE:
+                    menu.ingame_menu_loop()
 
         draw_background()
         running = snake.move()
@@ -206,6 +245,7 @@ def play():
         fpsClock.tick(FPS)
 
     pygame.quit()
+    sys.exit()
 
 
 if __name__ == "__main__":
