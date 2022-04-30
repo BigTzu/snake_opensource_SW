@@ -3,6 +3,8 @@ from pickletools import UP_TO_NEWLINE
 from turtle import speed
 import pygame
 import random
+
+
 pygame.init()
 pygame.display.set_caption('Snake - Open Source SW')
 
@@ -15,6 +17,10 @@ DIR_LEFT = [0, -1]
 DIR_RIGHT = [0, 1]
 FPS = 60
 snake_speed = 3
+
+fpsClock = pygame.time.Clock()
+screen = pygame.display.set_mode([800, 800])
+
 
 class Snake:
     def __init__(self):
@@ -51,11 +57,11 @@ class Snake:
         pygame.draw.circle(screen, (255, 0, 0), (self.food_position[1] * grid_cell_size + 10, self.food_position[0] * grid_cell_size + 10), 8)
     
     def set_direction(self, direction):
-        if (snake.direction[0] == direction[0] and snake.direction[1] != direction[1]):
+        if (self.direction[0] == direction[0] and self.direction[1] != direction[1]):
             return 0
-        if (snake.direction[1] == direction[1] and snake.direction[0] != direction[0]):
+        if (self.direction[1] == direction[1] and self.direction[0] != direction[0]):
             return 0
-        snake.direction = direction 
+        self.direction = direction
         return 1
     
     def generate_food(self):
@@ -75,11 +81,13 @@ class Snake:
             self.snake_grow = 1
             self.generate_food()
 
+
 def is_array_in_list(list, array):
     for elem in list:
         if (elem[0] == array[0] and elem[1] == array[1]):
             return 1
     return 0 
+
 
 def draw_background():
     tmp = 10
@@ -89,37 +97,39 @@ def draw_background():
             tmp *= -1
         tmp *= -1
 
-fpsClock = pygame.time.Clock()
 
-screen = pygame.display.set_mode([800, 800])
+def play():
+    screen.fill((240, 230, 140))
+    snake = Snake()
 
-screen.fill((240, 230, 140))
-snake = Snake()
+    running = True
+    while running:
 
-running = True
-while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP or event.key == pygame.K_z:
+                    running = snake.set_direction(DIR_UP)
+                elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
+                    running = snake.set_direction(DIR_DOWN)
+                elif event.key == pygame.K_LEFT or event.key == pygame.K_q:
+                    running = snake.set_direction(DIR_LEFT)
+                elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                    running = snake.set_direction(DIR_RIGHT)
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP or event.key == pygame.K_z:
-                running = snake.set_direction(DIR_UP)
-            elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
-                running = snake.set_direction(DIR_DOWN)
-            elif event.key == pygame.K_LEFT or event.key == pygame.K_q:
-                running = snake.set_direction(DIR_LEFT)
-            elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-                running = snake.set_direction(DIR_RIGHT)
+        draw_background()
+        running = snake.move()
+        snake.food_check()
+        snake.display()
 
-    draw_background()
-    running = snake.move()
-    snake.food_check()
-    snake.display()
+        #pygame.draw.circle(screen, (0, 0, 255), (250, 250), 75)
 
-    #pygame.draw.circle(screen, (0, 0, 255), (250, 250), 75)
+        pygame.display.flip()
+        fpsClock.tick(FPS)
 
-    pygame.display.flip()
-    fpsClock.tick(FPS)
+    pygame.quit()
 
-pygame.quit()
+
+if __name__ == "__main__":
+    play()
