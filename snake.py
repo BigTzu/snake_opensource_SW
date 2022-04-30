@@ -234,6 +234,9 @@ def play(resume=False):
                 elif event.key == pygame.K_ESCAPE:
                     menu.ingame_menu_loop()
 
+        if (not running):
+            break
+
         draw_background()
         running = snake.move()
         snake.food_check()
