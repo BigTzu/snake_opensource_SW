@@ -13,7 +13,7 @@ DIR_DOWN = [1, 0]
 DIR_LEFT = [0, -1]
 DIR_RIGHT = [0, 1]
 FPS = 60
-snake_speed = 3
+snake_speed = 5
 
 fpsClock = pygame.time.Clock()
 screen = pygame.display.set_mode([800, 800])
@@ -144,6 +144,7 @@ class Snake:
         self.snake.append([20, 20])
 
         self.snake_grow = 0
+        self.can_move = 1
 
         self.food_position = [0, 0]
         self.generate_food()
@@ -156,9 +157,14 @@ class Snake:
             else:
                 self.snake.pop(0)
             self.snake.append([self.snake[-1][0] + self.direction[0], self.snake[-1][1] + self.direction[1]])
+            self.can_move = 1
         self.speed += 1
         if (self.snake[-1][0] < 0 or self.snake[-1][1] < 0 or self.snake[-1][0] >= 40 or self.snake[-1][1] >= 40):
             return 0
+        snakeLength = len(self.snake)
+        for i in range(0, snakeLength - 1):
+            if self.snake[i] == self.snake[-1]:
+                return 0
         return 1
 
     def display(self):
@@ -168,10 +174,12 @@ class Snake:
     
     def set_direction(self, direction):
         if (self.direction[0] == direction[0] and self.direction[1] != direction[1]):
-            return 0
+            return 1
         if (self.direction[1] == direction[1] and self.direction[0] != direction[0]):
-            return 0
-        self.direction = direction
+            return 1
+        if self.can_move:
+            self.direction = direction
+            self.can_move = 0
         return 1
     
     def generate_food(self):
@@ -233,6 +241,9 @@ def play(resume=False):
                     running = snake.set_direction(DIR_RIGHT)
                 elif event.key == pygame.K_ESCAPE:
                     menu.ingame_menu_loop()
+
+        if (not running):
+            break
 
         draw_background()
         running = snake.move()
