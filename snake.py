@@ -1,10 +1,11 @@
 import random
 import pygame
 import sys
+import pickle as pk1
+import csv
 
 pygame.init()
 pygame.display.set_caption('Snake - Open Source SW')
-
 # settings
 grid_cell_size = 20
 grid_size = 40
@@ -15,6 +16,7 @@ DIR_RIGHT = [0, 1]
 FPS = 60
 snake_speed = 5
 
+username = ""
 fpsClock = pygame.time.Clock()
 screen = pygame.display.set_mode([800, 800])
 
@@ -38,7 +40,10 @@ class Menu:
             return True
         return False
 
-    def ingame_menu_loop(self):
+    def save(self, snake):
+        with open('save_file.csv', 'wb') as f: pk1.dump(snake, f)
+     
+    def ingame_menu_loop(self, snake):
         pygame.display.set_caption("Ingame Menu")
 
         running = True
@@ -70,15 +75,24 @@ class Menu:
                     elif self.check_mouse(restart_button, mouse_position):
                         pygame.display.set_caption("Snake")
                         play(resume=True)
+                    elif self.check_mouse(save_button, mouse_position):
+                        pygame.display.set_caption("Snake")
+                        self.save(snake)
                     elif self.check_mouse(exit_button, mouse_position):
                         pygame.quit()
                         sys.exit()
 
             pygame.display.update()
 
+    def get_username(self):
+        font = pygame.font.SysFont(None, 35)
+        text = ""
+        inpt(screen, fpsClock, font, text)
+
+    loaded = False
+
     def main_menu_loop(self):
         pygame.display.set_caption("Main Menu")
-
         running = True
         while running:
             screen.blit(pygame.image.load("assets/menu_background.jpg"), (0, 0))
@@ -109,6 +123,10 @@ class Menu:
                     elif self.check_mouse(exit_button, mouse_position):
                         pygame.quit()
                         sys.exit()
+                    elif self.check_mouse(load_button, mouse_position):
+                        self.loaded = True
+                        pygame.display.set_caption("Snake")
+                        running = False
 
             pygame.display.update()
 
@@ -139,6 +157,7 @@ class Snake:
         self.speed = 0
 
         #initial position y, x
+
         self.snake.append([19, 20])
         self.snake.append([18, 20])
         self.snake.append([20, 20])
@@ -215,6 +234,53 @@ def draw_background():
             tmp *= -1
         tmp *= -1
 
+def text_display(word,x,y):
+    font = pygame.font.SysFont(None, 45)
+    text = font.render("{}".format(word), True, "#a7843b")
+    return screen.blit(text,text.get_rect(midtop=screen.get_rect().midtop))
+
+def inpt(window, clock, font, text):
+    input_active = True
+    window.fill(0)
+    pygame.display.flip()
+    one_time = True
+    run = True
+    while run:
+        text_display("Please enter your name: ", 300, 400)
+        if one_time == True:
+            pygame.display.flip()
+            one_time = False
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                input_active = True
+                text = ""
+            elif event.type == pygame.KEYDOWN and input_active:
+                if event.key == pygame.K_RETURN:
+                    input_active = False
+                    run = False
+                    username = text
+                elif event.key == pygame.K_BACKSPACE:
+                    text = text[:-1]
+                else:
+                    text += event.unicode
+
+            window.fill(0)
+            text_surf = font.render(text, True, "#a7843b")
+            text_display("Please enter your name: ", 300, 400)
+            window.blit(text_surf, text_surf.get_rect(center=window.get_rect().center))
+            pygame.display.flip()
+
+def get_load_info():
+    with open('save_file.csv', 'rb') as f: arrayname1 = pk1.load(f)
+    print("loaded")
+    print(arrayname1)
+    return arrayname1
+
+
+def set_load():
+    loaded = True
 
 def play(resume=False):
     menu = Menu()
@@ -222,7 +288,10 @@ def play(resume=False):
         menu.main_menu_loop()
 
     screen.fill((240, 230, 140))
-    snake = Snake()
+    if menu.loaded is True:
+        snake = get_load_info()
+    else:
+        snake = Snake()
 
     running = True
     while running:
@@ -240,13 +309,16 @@ def play(resume=False):
                 elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                     running = snake.set_direction(DIR_RIGHT)
                 elif event.key == pygame.K_ESCAPE:
-                    menu.ingame_menu_loop()
+                    menu.ingame_menu_loop(snake)
 
         if (not running):
             break
 
         draw_background()
         running = snake.move()
+        if running == 0:
+            menu.get_username()
+
         snake.food_check()
         snake.display()
 
