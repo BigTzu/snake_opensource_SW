@@ -1,8 +1,9 @@
+import os.path
 import random
 import pygame
 import sys
 import pickle as pk1
-import csv
+import os.path as exists
 
 pygame.init()
 pygame.display.set_caption('Snake - Open Source SW')
@@ -22,8 +23,10 @@ screen = pygame.display.set_mode([800, 800])
 
 
 class Menu:
-    def __init__(self):
+    def __init__(self, save_and_load, ranking):
         self.font = pygame.font.Font("assets/Bebas-Regular.ttf", 75)
+        self.save_and_load = save_and_load
+        self.ranking = ranking
 
     def check_buttons(self, buttons_list, mouse_position):
         for button in buttons_list:
@@ -40,8 +43,6 @@ class Menu:
             return True
         return False
 
-    def save(self, snake):
-        with open('save_file.csv', 'wb') as f: pk1.dump(snake, f)
      
     def ingame_menu_loop(self, snake):
         pygame.display.set_caption("Ingame Menu")
@@ -77,17 +78,18 @@ class Menu:
                         play(resume=True)
                     elif self.check_mouse(save_button, mouse_position):
                         pygame.display.set_caption("Snake")
-                        self.save(snake)
+                        self.save_and_load.save(snake)
+                        play()
                     elif self.check_mouse(exit_button, mouse_position):
                         pygame.quit()
                         sys.exit()
 
             pygame.display.update()
 
-    def get_username(self):
+    def get_username(self, ranking, snake):
         font = pygame.font.SysFont(None, 35)
         text = ""
-        inpt(screen, fpsClock, font, text)
+        inpt(screen, fpsClock, font, text, ranking, snake)
 
     loaded = False
 
@@ -123,6 +125,8 @@ class Menu:
                     elif self.check_mouse(exit_button, mouse_position):
                         pygame.quit()
                         sys.exit()
+                    elif self.check_mouse(ranking_button, mouse_position):
+                        self.ranking.get_ranking()
                     elif self.check_mouse(load_button, mouse_position):
                         self.loaded = True
                         pygame.display.set_caption("Snake")
@@ -235,11 +239,11 @@ def draw_background():
         tmp *= -1
 
 def text_display(word,x,y):
-    font = pygame.font.SysFont(None, 45)
+    font = pygame.font.SysFont(None, 75)
     text = font.render("{}".format(word), True, "#a7843b")
     return screen.blit(text,text.get_rect(midtop=screen.get_rect().midtop))
 
-def inpt(window, clock, font, text):
+def inpt(window, clock, font, text, ranking, snake):
     input_active = True
     window.fill(0)
     pygame.display.flip()
@@ -260,7 +264,7 @@ def inpt(window, clock, font, text):
                 if event.key == pygame.K_RETURN:
                     input_active = False
                     run = False
-                    username = text
+                    ranking.set_ranking((len(snake.snake) - 3) * 100, text)
                 elif event.key == pygame.K_BACKSPACE:
                     text = text[:-1]
                 else:
@@ -272,24 +276,82 @@ def inpt(window, clock, font, text):
             window.blit(text_surf, text_surf.get_rect(center=window.get_rect().center))
             pygame.display.flip()
 
-def get_load_info():
-    with open('save_file.csv', 'rb') as f: arrayname1 = pk1.load(f)
-    print("loaded")
-    print(arrayname1)
-    return arrayname1
+class Save_and_Load:
+    def save(self, snake):
+        with open('save_file.txt', 'wb') as f: pk1.dump(snake, f)
 
+    def get_load_info(self):
+        with open('save_file.txt', 'rb') as f: arrayname1 = pk1.load(f)
+        return arrayname1
 
-def set_load():
-    loaded = True
+class Ranking:
+
+    def __init__(self):
+        self.ranking_list = []
+        if os.path.exists("rankings.txt"):
+            with open("rankings.txt") as file:
+                for line in file:
+                    line = line.replace('\n', '')
+                    splited_line = line.split(';')
+                    self.ranking_list.append([splited_line[0], int(splited_line[1])])
+
+    def set_ranking(self, score, username):
+        self.ranking_list.append([username, score])
+        self.ranking_list = sorted(self.ranking_list, key = lambda x: int(x[1]))
+        self.ranking_list.reverse()
+        f = open("rankings.txt", 'w')
+        for elem in self.ranking_list:
+            f.write(elem[0].__str__())
+            f.write(";")
+            f.write(elem[1].__str__())
+            f.write("\n")
+
+    def get_ranking(self):
+        if os.path.exists("rankings.txt"):
+            screen.fill(0)
+            text = ""
+            for elem in self.ranking_list:
+                text += elem[0] + ' ' + elem[1].__str__()
+            pygame.display.flip()
+            one_time = True
+            run = True
+            input_active = True
+            font = pygame.font.SysFont(None, 45)
+            while run:
+                if one_time == True:
+                    pygame.display.flip()
+                    one_time = False
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        run = False
+                    elif event.type == pygame.MOUSEBUTTONDOWN:
+                        input_active = True
+                    elif event.type == pygame.KEYDOWN and input_active:
+                        if event.key == pygame.K_RETURN:
+                            input_active = False
+                            run = False
+                    screen.fill(0)
+                    text_display("RANKING", 0,0)
+                    text = font.render("{}".format(self.ranking_list[0][0] + ' ' + str(self.ranking_list[0][1])), True, "#a7843b")
+                    screen.blit(text, (320, 200))
+                    if (len(self.ranking_list) > 1):
+                        text = font.render("{}".format(self.ranking_list[1][0] + ' ' + str(self.ranking_list[1][1])), True, "#a7843b")
+                        screen.blit(text, (320, 350))
+                    if (len(self.ranking_list) > 2):
+                        text = font.render("{}".format(self.ranking_list[2][0] + ' ' + str(self.ranking_list[2][1])), True, "#a7843b")
+                        screen.blit(text, (320, 500))
+                    pygame.display.flip()
 
 def play(resume=False):
-    menu = Menu()
+    ranking = Ranking()
+    save_and_load = Save_and_Load()
+    menu = Menu(save_and_load, ranking)
     if resume is False:
         menu.main_menu_loop()
 
     screen.fill((240, 230, 140))
     if menu.loaded is True:
-        snake = get_load_info()
+        snake = save_and_load.get_load_info()
     else:
         snake = Snake()
 
@@ -317,12 +379,10 @@ def play(resume=False):
         draw_background()
         running = snake.move()
         if running == 0:
-            menu.get_username()
+            menu.get_username(ranking, snake)
 
         snake.food_check()
         snake.display()
-
-        #pygame.draw.circle(screen, (0, 0, 255), (250, 250), 75)
 
         pygame.display.flip()
         fpsClock.tick(FPS)
