@@ -1,3 +1,10 @@
+#Vscoderelated
+tempCodeRunnerFile.py
+
+#Pycharm related files
+.idea/
+include/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
