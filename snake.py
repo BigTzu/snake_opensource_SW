@@ -1,11 +1,11 @@
 import random
 import pygame
 import sys
+import pickle as pk1
 import csv
 
 pygame.init()
 pygame.display.set_caption('Snake - Open Source SW')
-
 # settings
 grid_cell_size = 20
 grid_size = 40
@@ -41,18 +41,8 @@ class Menu:
         return False
 
     def save(self, snake):
-        f = open("save_file.csv", "w")
-        #f.write("name:")
-        #f.write(username + ";")
-        f.write("body:")
-        for elem in snake.snake:
-            f.write(elem[0].__str__())
-            f.write(",")
-            f.write(elem[1].__str__())
-            f.write(";")
-        f.write("dir:")
-        f.write(snake.direction.__str__())
-
+        with open('save_file.csv', 'wb') as f: pk1.dump(snake, f)
+     
     def ingame_menu_loop(self, snake):
         pygame.display.set_caption("Ingame Menu")
 
@@ -99,9 +89,10 @@ class Menu:
         text = ""
         inpt(screen, fpsClock, font, text)
 
+    loaded = False
+
     def main_menu_loop(self):
         pygame.display.set_caption("Main Menu")
-
         running = True
         while running:
             screen.blit(pygame.image.load("assets/menu_background.jpg"), (0, 0))
@@ -132,6 +123,10 @@ class Menu:
                     elif self.check_mouse(exit_button, mouse_position):
                         pygame.quit()
                         sys.exit()
+                    elif self.check_mouse(load_button, mouse_position):
+                        self.loaded = True
+                        pygame.display.set_caption("Snake")
+                        running = False
 
             pygame.display.update()
 
@@ -162,6 +157,7 @@ class Snake:
         self.speed = 0
 
         #initial position y, x
+
         self.snake.append([19, 20])
         self.snake.append([18, 20])
         self.snake.append([20, 20])
@@ -268,13 +264,26 @@ def inpt(window, clock, font, text):
             window.blit(text_surf, text_surf.get_rect(center=window.get_rect().center))
             pygame.display.flip()
 
+def get_load_info():
+    with open('save_file.csv', 'rb') as f: arrayname1 = pk1.load(f)
+    print("loaded")
+    print(arrayname1)
+    return arrayname1
+
+
+def set_load():
+    loaded = True
+
 def play(resume=False):
     menu = Menu()
     if resume is False:
         menu.main_menu_loop()
 
     screen.fill((240, 230, 140))
-    snake = Snake()
+    if menu.loaded is True:
+        snake = get_load_info()
+    else:
+        snake = Snake()
 
     running = True
     while running:
