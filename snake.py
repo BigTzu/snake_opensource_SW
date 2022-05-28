@@ -1,10 +1,21 @@
+from operator import truediv
+from unittest import runner
 from snake_settings import *
 from snake_player_object import *
+from dual_snake_player_object import *
 import snake_menus
 from snake_save_and_ranking import *
 
 pygame.init()
 pygame.display.set_caption('Snake - Open Source SW')
+
+def draw_dual_background():
+    tmp = 10
+    for x in range(dual_player_grid_width):
+        for y in range(dual_player_grid_height):
+            pygame.draw.rect(screen, (0, 100 + tmp, 0), pygame.Rect(x * grid_cell_size, y * grid_cell_size, grid_cell_size, grid_cell_size))
+            tmp *= -1
+        tmp *= -1
 
 def draw_background():
     tmp = 10
@@ -13,6 +24,23 @@ def draw_background():
             pygame.draw.rect(screen, (0, 100 + tmp, 0), pygame.Rect(x * grid_cell_size, y * grid_cell_size, grid_cell_size, grid_cell_size))
             tmp *= -1
         tmp *= -1
+
+def dualPlay():
+    screen = pygame.display.set_mode([1600, 800])
+    #resized_screen = pygame.transform.scale(screen, (1600,800)) 
+    #screen.blit(resized_screen, (0, 0))
+
+    screen.fill((240, 230, 140))
+    
+    dualSnake = DualSnake()
+    
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+        draw_dual_background()
+        pygame.display.flip()
 
 def play(resume=False):
     ranking = Ranking()
@@ -64,4 +92,5 @@ def play(resume=False):
 
 
 if __name__ == "__main__":
-    play()
+    dualPlay()
+    #play()

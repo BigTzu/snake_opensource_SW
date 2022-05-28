@@ -19,6 +19,7 @@ DIR_RIGHT = [0, 1]
 FPS = 60
 snake_speed = 5
 
+os.environ['SDL_VIDEO_WINDOW_POS'] = str(50) + "," + str(50)
 username = ""
 fpsClock = pygame.time.Clock()
 screen = pygame.display.set_mode([800, 800])
