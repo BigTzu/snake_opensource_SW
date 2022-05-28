@@ -82,17 +82,22 @@ class Menu:
             title_rect = title.get_rect(center=(400, 100))
             mouse_position = pygame.mouse.get_pos()
 
-            play_button = Button(image=pygame.image.load("assets/button_rect.png"), x_pos=400, y_pos=250,
+            play_button = Button(image=pygame.image.load("assets/button_rect.png"), x_pos=200, y_pos=250,
                                  text_input="PLAY", font=self.font)
-            load_button = Button(image=pygame.image.load("assets/button_rect.png"), x_pos=400, y_pos=400,
+            dual_play_button = Button(image=pygame.image.load("assets/button_rect.png"), x_pos=605, y_pos=250,
+                                 text_input="DUAL PLAY", font=self.font)
+            auto_play_button = Button(image=pygame.image.load("assets/button_rect.png"), x_pos=400, y_pos=370,
+                                 text_input="AUTO PLAY", font=self.font)
+            load_button = Button(image=pygame.image.load("assets/button_rect.png"), x_pos=400, y_pos=490,
                                  text_input="LOAD", font=self.font)
-            ranking_button = Button(image=pygame.image.load("assets/button_rect.png"), x_pos=400, y_pos=550,
+            ranking_button = Button(image=pygame.image.load("assets/button_rect.png"), x_pos=400, y_pos=610,
                                     text_input="RANKING", font=self.font)
-            exit_button = Button(image=pygame.image.load("assets/button_rect.png"), x_pos=400, y_pos=700,
+            exit_button = Button(image=pygame.image.load("assets/button_rect.png"), x_pos=400, y_pos=730,
                                  text_input="EXIT", font=self.font)
 
             screen.blit(title, title_rect)
-            self.check_buttons([play_button, load_button, ranking_button, exit_button], mouse_position)
+            self.check_buttons([play_button, dual_play_button, auto_play_button, load_button, ranking_button,
+                                exit_button], mouse_position)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -100,7 +105,13 @@ class Menu:
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.check_mouse(play_button, mouse_position):
-                        pygame.display.set_caption("Snake")
+                        pygame.display.set_caption("Snake Solo Play")
+                        running = False
+                    elif self.check_mouse(dual_play_button, mouse_position):
+                        pygame.display.set_caption("Snake Dual Play")
+                        running = False
+                    elif self.check_mouse(auto_play_button, mouse_position):
+                        pygame.display.set_caption("Snake Auto Play")
                         running = False
                     elif self.check_mouse(exit_button, mouse_position):
                         pygame.quit()
@@ -109,7 +120,7 @@ class Menu:
                         self.ranking.get_ranking()
                     elif self.check_mouse(load_button, mouse_position):
                         self.loaded = True
-                        pygame.display.set_caption("Snake")
+                        pygame.display.set_caption("Snake Solo Play")
                         running = False
 
             pygame.display.update()
