@@ -39,8 +39,34 @@ def dualPlay():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    running = dualSnake.set_direction(1, DIR_UP)
+                elif event.key == pygame.K_DOWN:
+                    running = dualSnake.set_direction(1, DIR_DOWN)
+                elif event.key == pygame.K_LEFT:
+                    running = dualSnake.set_direction(1, DIR_LEFT)
+                elif event.key == pygame.K_RIGHT:
+                    running = dualSnake.set_direction(1, DIR_RIGHT)
+                if event.key == pygame.K_z:
+                    running = dualSnake.set_direction(2, DIR_UP)
+                elif event.key == pygame.K_s:
+                    running = dualSnake.set_direction(2, DIR_DOWN)
+                elif event.key == pygame.K_q:
+                    running = dualSnake.set_direction(2, DIR_LEFT)
+                elif event.key == pygame.K_d:
+                    running = dualSnake.set_direction(2, DIR_RIGHT)
+        if (not running):
+            break
+        
         draw_dual_background()
+        running = dualSnake.move()
+
+        dualSnake.food_check()
+        dualSnake.display()
+
         pygame.display.flip()
+        fpsClock.tick(FPS)
 
 def play(resume=False):
     ranking = Ranking()
