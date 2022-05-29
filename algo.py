@@ -20,16 +20,12 @@ def play_algo(resume=False):
 
     previous_snake_pos = [0,0]
     screen.fill((240, 230, 140))
-    if menu.loaded is True:
-        snake = save_and_load.get_load_info()
-    else:
-        snake = Snake()
+    snake = Snake()
     running = True
     sequence = False
     sequence_two = False
     enabled = False
     while running:
-
         if snake.get_position()[0] == 0 and enabled == False:
             enabled = True
             running = snake.set_direction(DIR_LEFT)
@@ -37,10 +33,8 @@ def play_algo(resume=False):
         if enabled == True:
             if snake.get_position()[1] == single_player_grid_width - 1 and previous_snake_pos[0] <= snake.get_position()[0] and snake.get_position()[0] != 0:
                 running = snake.set_direction(DIR_UP)
-                print("up")
             if snake.get_position()[1] == single_player_grid_width - 1 and snake.get_position()[0] == 0:
                 running = snake.set_direction(DIR_LEFT)
-                print("left")
             if snake.get_position()[0] == 0 and snake.get_position()[1] == 0:
                 running = snake.set_direction(DIR_DOWN)
             if sequence == True:
@@ -58,12 +52,6 @@ def play_algo(resume=False):
             if snake.get_position()[0] == single_player_grid_height - 1 and sequence_two == False:
                 running = snake.set_direction(DIR_RIGHT)
                 sequence_two = True
-
-
-
-
-
-        print(snake.direction)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
