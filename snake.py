@@ -125,5 +125,4 @@ def play(resume=False):
 
 
 if __name__ == "__main__":
-    #play()
-    play_algo()
+    play()

@@ -58,7 +58,7 @@ def play_algo(resume=False):
                 running = False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    menu.ingame_menu_loop(snake)
+                    menu.special_mode_menu_loop("auto")
 
         if (not running):
             break
