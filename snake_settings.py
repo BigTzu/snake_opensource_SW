@@ -11,6 +11,9 @@ single_player_grid_width = 40
 single_player_grid_height = 40
 dual_player_grid_width = 80
 dual_player_grid_height = 40
+
+snake_one_color = (167, 199, 231)
+snake_two_color = (240, 230, 140)
 # grid_size = 40
 DIR_UP = [-1, 0]
 DIR_DOWN = [1, 0]
