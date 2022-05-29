@@ -2,11 +2,6 @@ from snake_settings import *
 from snake_player_object import *
 import snake_menus
 from snake_save_and_ranking import *
-from algo import *
-
-
-pygame.init()
-pygame.display.set_caption('Snake - Open Source SW')
 
 def draw_background():
     tmp = 10
@@ -16,20 +11,51 @@ def draw_background():
             tmp *= -1
         tmp *= -1
 
-def play(resume=False):
+def play_algo(resume=False):
     ranking = Ranking()
     save_and_load = Save_and_Load()
     menu = snake_menus.Menu(save_and_load, ranking)
     if resume is False:
         menu.main_menu_loop()
+
+    previous_snake_pos = [0,0]
     screen.fill((240, 230, 140))
     if menu.loaded is True:
         snake = save_and_load.get_load_info()
     else:
         snake = Snake()
-
     running = True
+    sequence = False
+    sequence_two = False
     while running:
+        if snake.get_position()[1] == single_player_grid_width - 1 and previous_snake_pos[0] <= snake.get_position()[0] and snake.get_position()[0] != 0:
+            running = snake.set_direction(DIR_UP)
+            print("up")
+        if snake.get_position()[1] == single_player_grid_width - 1 and snake.get_position()[0] == 0:
+            running = snake.set_direction(DIR_LEFT)
+            print("left")
+        if snake.get_position()[0] == 0 and snake.get_position()[1] == 0:
+            running = snake.set_direction(DIR_DOWN)
+        if sequence == True:
+            running = snake.set_direction(DIR_DOWN)
+            sequence = False
+
+        if snake.get_position()[0] == 1 and sequence == False:
+            running = snake.set_direction(DIR_RIGHT)
+            sequence = True
+
+        if sequence_two == True:
+            running = snake.set_direction(DIR_UP)
+            sequence_two = False
+
+        if snake.get_position()[0] == single_player_grid_height - 1 and sequence_two == False:
+            running = snake.set_direction(DIR_RIGHT)
+            sequence_two = True
+
+
+
+
+        print(snake.direction)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -59,11 +85,7 @@ def play(resume=False):
 
         pygame.display.flip()
         fpsClock.tick(FPS)
+        previous_snake_pos = snake.get_position()
 
     pygame.quit()
     sys.exit()
-
-
-if __name__ == "__main__":
-    #play()
-    play_algo()

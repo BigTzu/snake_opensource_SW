@@ -17,7 +17,7 @@ DIR_DOWN = [1, 0]
 DIR_LEFT = [0, -1]
 DIR_RIGHT = [0, 1]
 FPS = 60
-snake_speed = 5
+snake_speed = 1
 
 username = ""
 fpsClock = pygame.time.Clock()

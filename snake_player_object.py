@@ -7,7 +7,6 @@ class Snake:
         self.speed = 0
 
         #initial position y, x
-
         self.snake.append([19, 20])
         self.snake.append([18, 20])
         self.snake.append([20, 20])
@@ -67,6 +66,9 @@ class Snake:
         if (self.snake[-1][0] == self.food_position[0] and self.snake[-1][1] == self.food_position[1]):
             self.snake_grow = 1
             self.generate_food()
+
+    def get_position(self):
+        return self.snake[-1]
 
 
 def is_array_in_list(list, array):
