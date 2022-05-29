@@ -25,13 +25,17 @@ def draw_background():
             tmp *= -1
         tmp *= -1
 
-def dualPlay():
+def dualPlay(resume=False):
+    ranking = Ranking()
+    save_and_load = Save_and_Load()
+    menu = snake_menus.Menu(save_and_load, ranking)
+    if resume is False:
+        menu.main_menu_loop()
     screen = pygame.display.set_mode([1600, 800])
 
     screen.fill((240, 230, 140))
-    
     dualSnake = DualSnake()
-    
+
     running = True
     while running:
         for event in pygame.event.get():
@@ -54,9 +58,11 @@ def dualPlay():
                     running = dualSnake.set_direction(2, DIR_LEFT)
                 elif event.key == pygame.K_d:
                     running = dualSnake.set_direction(2, DIR_RIGHT)
+                elif event.key == pygame.K_ESCAPE:
+                    menu.special_mode_menu_loop("dual")
         if (not running):
             break
-        
+
         draw_dual_background()
         running = dualSnake.move()
 
@@ -65,6 +71,8 @@ def dualPlay():
 
         pygame.display.flip()
         fpsClock.tick(FPS)
+    pygame.quit()
+    sys.exit()
 
 def play(resume=False):
     ranking = Ranking()
@@ -116,5 +124,4 @@ def play(resume=False):
 
 
 if __name__ == "__main__":
-    dualPlay()
-    #play()
+    play()

@@ -66,6 +66,43 @@ class Menu:
 
             pygame.display.update()
 
+    def special_mode_menu_loop(self, which_mode):
+        pygame.display.set_caption("Ingame Menu")
+
+        running = True
+        while running:
+            title = self.font.render("INGAME MENU", True, "#a7843b")
+            title_rect = title.get_rect(center=(400, 100))
+            mouse_position = pygame.mouse.get_pos()
+
+            resume_button = Button(image=pygame.image.load("assets/button_rect.png"), x_pos=400, y_pos=250,
+                                 text_input="RESUME", font=self.font)
+            restart_button = Button(image=pygame.image.load("assets/button_rect.png"), x_pos=400, y_pos=400,
+                                 text_input="RESTART", font=self.font)
+            exit_button = Button(image=pygame.image.load("assets/button_rect.png"), x_pos=400, y_pos=550,
+                                 text_input="EXIT", font=self.font)
+
+            screen.blit(title, title_rect)
+            self.check_buttons([resume_button, restart_button, exit_button], mouse_position)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.check_mouse(resume_button, mouse_position):
+                        pygame.display.set_caption("Snake")
+                        running = False
+                    elif self.check_mouse(restart_button, mouse_position):
+                        pygame.display.set_caption("Snake")
+                        if which_mode == "dual":
+                            snake_main.dualPlay(resume=True)
+                    elif self.check_mouse(exit_button, mouse_position):
+                        pygame.quit()
+                        sys.exit()
+
+            pygame.display.update()
+
     def get_username(self, ranking, snake):
         font = pygame.font.SysFont(None, 35)
         text = ""
@@ -83,7 +120,7 @@ class Menu:
             mouse_position = pygame.mouse.get_pos()
 
             play_button = Button(image=pygame.image.load("assets/button_rect.png"), x_pos=200, y_pos=250,
-                                 text_input="PLAY", font=self.font)
+                                 text_input="SINGLE PLAY", font=self.font)
             dual_play_button = Button(image=pygame.image.load("assets/button_rect.png"), x_pos=605, y_pos=250,
                                  text_input="DUAL PLAY", font=self.font)
             auto_play_button = Button(image=pygame.image.load("assets/button_rect.png"), x_pos=400, y_pos=370,
@@ -110,6 +147,7 @@ class Menu:
                     elif self.check_mouse(dual_play_button, mouse_position):
                         pygame.display.set_caption("Snake Dual Play")
                         running = False
+                        snake_main.dualPlay(resume=True)
                     elif self.check_mouse(auto_play_button, mouse_position):
                         pygame.display.set_caption("Snake Auto Play")
                         running = False
