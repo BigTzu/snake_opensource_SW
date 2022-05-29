@@ -108,6 +108,15 @@ class Menu:
         font = pygame.font.SysFont(None, 35)
         text = ""
         inpt(screen, fpsClock, font, text, ranking, snake)
+    def display_score(self, text):
+        screen.fill(0)
+        run = True
+        text_display(text, 300, 400)
+        pygame.display.flip()
+        while run:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
 
     loaded = False
 
