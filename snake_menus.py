@@ -1,6 +1,7 @@
 from snake_settings import *
 import snake as snake_main
 from snake_save_and_ranking import *
+from algo import play_algo
 
 class Menu:
     def __init__(self, save_and_load, ranking):
@@ -151,6 +152,7 @@ class Menu:
                     elif self.check_mouse(auto_play_button, mouse_position):
                         pygame.display.set_caption("Snake Auto Play")
                         running = False
+                        play_algo(resume=True)
                     elif self.check_mouse(exit_button, mouse_position):
                         pygame.quit()
                         sys.exit()

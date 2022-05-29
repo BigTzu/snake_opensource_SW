@@ -5,6 +5,8 @@ from snake_player_object import *
 from dual_snake_player_object import *
 import snake_menus
 from snake_save_and_ranking import *
+from algo import *
+
 
 pygame.init()
 pygame.display.set_caption('Snake - Open Source SW')
@@ -80,7 +82,6 @@ def play(resume=False):
     menu = snake_menus.Menu(save_and_load, ranking)
     if resume is False:
         menu.main_menu_loop()
-
     screen.fill((240, 230, 140))
     if menu.loaded is True:
         snake = save_and_load.get_load_info()
@@ -124,4 +125,5 @@ def play(resume=False):
 
 
 if __name__ == "__main__":
-    play()
+    #play()
+    play_algo()
