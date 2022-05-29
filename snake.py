@@ -84,6 +84,7 @@ def dualPlay(resume=False):
     sys.exit()
 
 def play(resume=False):
+    screen = pygame.display.set_mode([800, 800])
     ranking = Ranking()
     save_and_load = Save_and_Load()
     menu = snake_menus.Menu(save_and_load, ranking)

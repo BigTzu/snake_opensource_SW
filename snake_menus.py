@@ -62,8 +62,7 @@ class Menu:
                         self.save_and_load.save(snake)
                         snake_main.play()
                     elif self.check_mouse(exit_button, mouse_position):
-                        pygame.quit()
-                        sys.exit()
+                        snake_main.play()
 
             pygame.display.update()
 
@@ -101,8 +100,7 @@ class Menu:
                         elif which_mode == "auto":
                             snake_main.play_algo(resume=True)
                     elif self.check_mouse(exit_button, mouse_position):
-                        pygame.quit()
-                        sys.exit()
+                        snake_main.play()
 
             pygame.display.update()
 
