@@ -52,11 +52,11 @@ def dualPlay(resume=False):
                     running = dualSnake.set_direction(1, DIR_LEFT)
                 elif event.key == pygame.K_RIGHT:
                     running = dualSnake.set_direction(1, DIR_RIGHT)
-                if event.key == pygame.K_z:
+                if event.key == pygame.K_w:
                     running = dualSnake.set_direction(2, DIR_UP)
                 elif event.key == pygame.K_s:
                     running = dualSnake.set_direction(2, DIR_DOWN)
-                elif event.key == pygame.K_q:
+                elif event.key == pygame.K_a:
                     running = dualSnake.set_direction(2, DIR_LEFT)
                 elif event.key == pygame.K_d:
                     running = dualSnake.set_direction(2, DIR_RIGHT)
@@ -69,7 +69,11 @@ def dualPlay(resume=False):
         running = dualSnake.move()
 
         if running == 0:
-            menu.display_score("player " + dualSnake.winning_snake.__str__() + " won the game")
+            if dualSnake.winning_snake == 1:
+                menu.display_score("blue player " + dualSnake.winning_snake.__str__() + " won the game")
+            elif dualSnake.winning_snake == 2:
+                menu.display_score("yellow player " + dualSnake.winning_snake.__str__() + " won the game")
+
 
         dualSnake.food_check()
         dualSnake.display()
@@ -98,11 +102,11 @@ def play(resume=False):
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP or event.key == pygame.K_z:
+                if event.key == pygame.K_UP or event.key == pygame.K_w:
                     running = snake.set_direction(DIR_UP)
                 elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
                     running = snake.set_direction(DIR_DOWN)
-                elif event.key == pygame.K_LEFT or event.key == pygame.K_q:
+                elif event.key == pygame.K_LEFT or event.key == pygame.K_a:
                     running = snake.set_direction(DIR_LEFT)
                 elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                     running = snake.set_direction(DIR_RIGHT)
