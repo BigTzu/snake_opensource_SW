@@ -68,6 +68,9 @@ class Snake:
             self.snake_grow = 1
             self.generate_food()
 
+    def get_snake_position(self):
+        return self.snake[-1]
+
 
 def is_array_in_list(list, array):
     for elem in list:
