@@ -66,7 +66,7 @@ def play_algo(resume=False):
         draw_background()
         running = snake.move()
         if running == 0:
-            menu.display_score(((len(snake.snake) - 3) * 100).__str__())
+            menu.display_score("score : " + ((len(snake.snake) - 3) * 100).__str__())
 
         snake.food_check()
         snake.display()
