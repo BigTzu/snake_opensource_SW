@@ -27,8 +27,6 @@ def draw_background():
 
 def dualPlay():
     screen = pygame.display.set_mode([1600, 800])
-    #resized_screen = pygame.transform.scale(screen, (1600,800)) 
-    #screen.blit(resized_screen, (0, 0))
 
     screen.fill((240, 230, 140))
     

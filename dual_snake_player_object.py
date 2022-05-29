@@ -24,6 +24,8 @@ class DualSnake:
 
         self.can_move = 1
 
+        self.winning_snake = 0
+
         self.foodOne_position = [-1, -1]
         self.foodTwo_position = [-1, -1]
         self.generate_food(0) #0 generate both foods
@@ -35,20 +37,36 @@ class DualSnake:
                 self.snakeOne_grow = 0
             else:
                 self.snakeOne.pop(0)
-            self.speed = 0
             if (self.snakeTwo_grow):
                 self.snakeTwo_grow = 0
             else:
                 self.snakeTwo.pop(0)
+            self.speed = 0
             self.snakeOne.append([self.snakeOne[-1][0] + self.directionOne[0], self.snakeOne[-1][1] + self.directionOne[1]])
             self.snakeTwo.append([self.snakeTwo[-1][0] + self.directionTwo[0], self.snakeTwo[-1][1] + self.directionTwo[1]])
             self.can_move = 1
         self.speed += 1
         if (self.snakeOne[-1][0] < 0 or self.snakeOne[-1][1] < 0 or self.snakeOne[-1][0] >= dual_player_grid_height or self.snakeOne[-1][1] >= dual_player_grid_width):
+            self.winning_snake = 2
             return 0
-        snakeLength = len(self.snakeOne)
-        for i in range(0, snakeLength - 1):
+        if (self.snakeTwo[-1][0] < 0 or self.snakeTwo[-1][1] < 0 or self.snakeTwo[-1][0] >= dual_player_grid_height or self.snakeTwo[-1][1] >= dual_player_grid_width):
+            self.winning_snake = 1
+            return 0
+        snakeOneLength = len(self.snakeOne)
+        snakeTwoLength = len(self.snakeTwo)
+        for i in range(0, snakeOneLength - 1):
             if self.snakeOne[i] == self.snakeOne[-1]:
+                self.winning_snake = 2
+                return 0
+            elif self.snakeOne[i] == self.snakeTwo[-1]:
+                self.winning_snake = 1
+                return 0
+        for i in range(0, snakeTwoLength - 1):
+            if self.snakeTwo[i] == self.snakeOne[-1]:
+                self.winning_snake = 2
+                return 0
+            elif self.snakeTwo[i] == self.snakeTwo[-1]:
+                self.winning_snake = 1
                 return 0
         return 1
 
