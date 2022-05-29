@@ -68,6 +68,9 @@ def dualPlay(resume=False):
         draw_dual_background()
         running = dualSnake.move()
 
+        if running == 0:
+            menu.display_score("player " + dualSnake.winning_snake.__str__() + " won the game")
+
         dualSnake.food_check()
         dualSnake.display()
 

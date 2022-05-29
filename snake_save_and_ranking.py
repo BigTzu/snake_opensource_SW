@@ -3,7 +3,7 @@ from snake_settings import *
 def text_display(word,x,y):
     font = pygame.font.SysFont(None, 75)
     text = font.render("{}".format(word), True, "#a7843b")
-    return screen.blit(text,text.get_rect(midtop=screen.get_rect().midtop))
+    return screen.blit(text,text.get_rect(center=screen.get_rect().center))
 
 def inpt(window, clock, font, text, ranking, snake):
     input_active = True
