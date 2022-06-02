@@ -114,25 +114,24 @@ def play(resume=False):
                     running = snake.set_direction(DIR_RIGHT)
                 elif event.key == pygame.K_ESCAPE:
                     result = menu.ingame_menu_loop(snake)
-                    if(result==1 or result==2):
+                    if(result==1):
                         running = False
 
         if (not running):
             break
-        else:
-            draw_background()
-            running = snake.move()
-            if running == 0:
-                menu.get_username(ranking, snake)
+        draw_background()
+        running = snake.move()
+        if running == 0:
+            menu.get_username(ranking, snake)
 
-            snake.food_check()
-            snake.display()
+        snake.food_check()
+        snake.display()
 
-            pygame.display.flip()
-            fpsClock.tick(FPS)
+        pygame.display.flip()
+        fpsClock.tick(FPS)
 
-    if(result==2):
-        play()
+    #if(result==2):
+    #    play()
     #pygame.quit()
     #sys.exit()
 

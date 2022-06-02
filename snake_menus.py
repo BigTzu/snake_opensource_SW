@@ -67,7 +67,7 @@ class Menu:
                         self.save_and_load.save(snake)
                         running = False
                         snake_main.play()
-                        return 2
+                        return 1
 
                     elif self.check_mouse(exit_button, mouse_position):
                         running = False
