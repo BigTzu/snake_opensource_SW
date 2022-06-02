@@ -90,6 +90,7 @@ def play(resume=False):
     menu = snake_menus.Menu(save_and_load, ranking)
     if resume is False:
         menu.main_menu_loop()
+
     screen.fill((240, 230, 140))
     if menu.loaded is True:
         snake = save_and_load.get_load_info()
@@ -97,8 +98,8 @@ def play(resume=False):
         snake = Snake()
 
     running = True
+    result=-1
     while running:
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -112,11 +113,12 @@ def play(resume=False):
                 elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                     running = snake.set_direction(DIR_RIGHT)
                 elif event.key == pygame.K_ESCAPE:
-                    menu.ingame_menu_loop(snake)
+                    result = menu.ingame_menu_loop(snake)
+                    if(result==1):
+                        running = False
 
         if (not running):
             break
-
         draw_background()
         running = snake.move()
         if running == 0:
@@ -128,9 +130,12 @@ def play(resume=False):
         pygame.display.flip()
         fpsClock.tick(FPS)
 
-    pygame.quit()
-    sys.exit()
+    #if(result==2):
+    #    play()
+    #pygame.quit()
+    #sys.exit()
 
 
 if __name__ == "__main__":
-    play()
+    snake_menus.Menu(Save_and_Load(), Ranking()).main_menu_loop()
+    #play()
