@@ -54,15 +54,25 @@ class Menu:
                     if self.check_mouse(resume_button, mouse_position):
                         pygame.display.set_caption("Snake Solo Play")
                         running = False
+                        return 0
+
                     elif self.check_mouse(restart_button, mouse_position):
                         pygame.display.set_caption("Snake Solo Play")
+                        running = False
                         snake_main.play(resume=True)
+                        return 1
+                        
                     elif self.check_mouse(save_button, mouse_position):
                         pygame.display.set_caption("Snake Solo Play")
                         self.save_and_load.save(snake)
+                        running = False
                         snake_main.play()
+                        return 2
+
                     elif self.check_mouse(exit_button, mouse_position):
-                        snake_main.play()
+                        running = False
+                        self.main_menu_loop()
+                        return 1
 
             pygame.display.update()
 
@@ -153,7 +163,7 @@ class Menu:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.check_mouse(play_button, mouse_position):
                         pygame.display.set_caption("Snake Solo Play")
-                        running = False
+                        snake_main.play(resume=True)
                     elif self.check_mouse(dual_play_button, mouse_position):
                         pygame.display.set_caption("Snake Dual Play")
                         running = False
