@@ -92,7 +92,10 @@ def play(resume=False):
         menu.main_menu_loop()
     screen.fill((240, 230, 140))
     if menu.loaded is True:
-        snake = save_and_load.get_load_info()
+        try:
+            snake = save_and_load.get_load_info()
+        except FileNotFoundError:
+            snake = Snake()
     else:
         snake = Snake()
 
