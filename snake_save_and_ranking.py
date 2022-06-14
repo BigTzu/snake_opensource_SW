@@ -55,7 +55,7 @@ class Ranking:
                 for line in file:
                     line = line.replace('\n', '')
                     splited_line = line.split(';')
-                    self.ranking_list.append([splited_line[0], int(splited_line[1])])
+                    self.ranking_list.append([';'.join(splited_line[0:-1]), int(splited_line[-1])])
 
     def set_ranking(self, score, username):
         self.ranking_list.append([username, score])
